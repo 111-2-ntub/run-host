@@ -9,7 +9,7 @@ from flask import request
 
 def login(request):
     return HttpResponse("good")
-    content = request.json
+    content = request.POST
     account = content['account']
     password = content["password"]
     data = userModel.login(account, password)
@@ -26,7 +26,7 @@ def login(request):
 
 
 def sign(request):
-    content = request.json
+    content = request.POST
     cond = ["account", "password", "age", "sex",
             "areaid", "name", "degree", "phone"]
     result = {"success": False, "mes": ""}
@@ -49,17 +49,17 @@ def sign(request):
     return ret(result)
 
 
-def getUser(u_id):
+def getUser(request,u_id):
     return ret(userModel.user(u_id))
 
 
-def user():
-    content = request.json
+def user(request):
+    content = request.POST
     return ret(userModel.user(content["user_id"]))
 
 
-def edit():
-    content = request.json
+def edit(request):
+    content = request.POST
     print(content)
     cond = ["account", "oldPassword", "password", "passwordConfire"]
     result = {"success": False, "mes": ""}
@@ -88,8 +88,8 @@ def edit():
 
 
 
-def changeProfile():
-    content = request.json
+def changeProfile(request):
+    content = request.POST
     account = content["account"]
     cond = ["area_id", "name"]
     data = {}
@@ -105,8 +105,8 @@ def changeProfile():
 
 
 
-def c():
-    content = request.json
+def c(request):
+    content = request.POST
     t = checkParm(["user_id", "add", "remove"],content)
     if isinstance(t, dict):
         return ret(userModel.setCateogry(t["user_id"], t["add"], t["remove"]))
@@ -114,6 +114,6 @@ def c():
         return ret({"success": False, "mes": t})
 
 
-def p_user(p_id):
+def p_user(request,p_id):
     return ret(userModel.politician_user(p_id))
     

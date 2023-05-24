@@ -22,7 +22,7 @@ class DB():
     def store_p(self):
         return 5
 
-    __host = '85.10.205.173'
+    __host = 'db4free.net'
     __user = 'politics_run'
     __dbname = 'politics_run'
     __password = 'Qinhev-qarvar-cawsu3'
