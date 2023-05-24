@@ -1,12 +1,12 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from . import politicianModel
-from ...runapp import util
+from  .util import(ret,checkParm,normalize_query)
 from flask import request
 
-ret = util.ret
-checkParm = util.checkParm
-normalize_query = util.normalize_query
+# ret = util.ret
+# checkParm = util.checkParm
+# normalize_query = util.normalize_query
 
 
 def list():

@@ -1,4 +1,4 @@
-from django.db import DB
+from .db import DB
 import json
 # from model.util import group
 

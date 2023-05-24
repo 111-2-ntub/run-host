@@ -1,13 +1,14 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from . import userModel
-from ...runapp import util
+from .util import (ret,checkParm)
 from flask import request
 
-ret = util.ret
-checkParm = util.checkParm
+# ret = util.ret
+# checkParm = util.checkParm
 
-def login():
+def login(request):
+    return HttpResponse("good")
     content = request.json
     account = content['account']
     password = content["password"]
@@ -24,7 +25,7 @@ def login():
     return ret(result)
 
 
-def sign():
+def sign(request):
     content = request.json
     cond = ["account", "password", "age", "sex",
             "areaid", "name", "degree", "phone"]
