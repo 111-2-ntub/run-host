@@ -22,10 +22,10 @@ class DB():
     def store_p(self):
         return 5
 
-    __host = 'db4free.net'
-    __user = 'politics_run'
-    __dbname = 'politics_run'
-    __password = 'Qinhev-qarvar-cawsu3'
+    __host = '127.0.0.1'
+    __user = 'root'
+    __dbname = 'run'
+    __password = 'root'
     __conn = None
 
     @staticmethod
@@ -37,7 +37,7 @@ class DB():
                 database=DB.__dbname,
                 user=DB.__user,
                 password=DB.__password,
-                charset="utf8",
+                # charset="utf8",
                 )
             if connection.is_connected():                
                 cursor = connection.cursor(dictionary=True)
@@ -73,6 +73,7 @@ class DB():
                     else:
                         cursor.execute(sqlstr)
                         rows = cursor.fetchall()
+                        print(rows)
                         return {"success": True, "data": rows}
                 cursor.close()
                 connection.close()

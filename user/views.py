@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import JsonResponse
 from . import userModel
 from .util import (ret,checkParm)
 from flask import request
@@ -8,7 +8,7 @@ from flask import request
 # checkParm = util.checkParm
 
 def login(request):
-    return HttpResponse("good")
+    return JsonResponse("good")
     content = request.POST
     account = content['account']
     password = content["password"]
@@ -22,7 +22,7 @@ def login(request):
     else:
         result["mes"] = "登入異常"
 
-    return ret(result)
+    return (result)
 
 
 def sign(request):
@@ -43,19 +43,18 @@ def sign(request):
                 result["mes"] = f"註冊異常 - 重複帳號"
             else:
                 result["mes"] = "註冊異常"
-
     else:
         result["mes"] = "請填畢所有資料"
-    return ret(result)
+    return JsonResponse(result)
 
 
 def getUser(request,u_id):
-    return ret(userModel.user(u_id))
+    return JsonResponse(userModel.hasUser(u_id))
 
 
 def user(request):
     content = request.POST
-    return ret(userModel.user(content["user_id"]))
+    return JsonResponse(userModel.user(content["user_id"]))
 
 
 def edit(request):
@@ -84,7 +83,7 @@ def edit(request):
                 result["mes"] = "輸入舊密碼錯誤"
             else:
                 result["mes"] = "帳號異常"
-    return ret(result)
+    return JsonResponse((result))
 
 
 
@@ -101,7 +100,7 @@ def changeProfile(request):
     if(data["success"]):
         result["success"] = True
         result["mes"] = "修改成功"
-    return ret(result)
+    return JsonResponse((result))
 
 
 
@@ -109,11 +108,11 @@ def c(request):
     content = request.POST
     t = checkParm(["user_id", "add", "remove"],content)
     if isinstance(t, dict):
-        return ret(userModel.setCateogry(t["user_id"], t["add"], t["remove"]))
+        return JsonResponse((userModel.setCateogry(t["user_id"], t["add"], t["remove"])))
     else:
-        return ret({"success": False, "mes": t})
+        return JsonResponse(({"success": False, "mes": t}))
 
 
 def p_user(request,p_id):
-    return ret(userModel.politician_user(p_id))
+    return JsonResponse((userModel.politician_user(p_id)))
     
