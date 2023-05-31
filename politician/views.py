@@ -1,49 +1,45 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse,JsonResponse
 from . import politicianModel
-from  .util import(ret,checkParm,normalize_query)
-from flask import request
+from  run.util import(ret,checkParm,get_POST_data,group,for_return)
+# from flask import request
 
 # ret = util.ret
 # checkParm = util.checkParm
 # normalize_query = util.normalize_query
 
 
-def list():
-    print(request.args.get("name"))
-    data = request.args
-    query_params = normalize_query(data)
-    print(query_params)
-    return ret(politicianModel.getList({}))
+def list(request):
+    return JsonResponse(for_return(politicianModel.getList({})))
 
 
-def detail(p_id):
-    return ret(politicianModel.getDetail({"id": p_id}))
+def detail(request,p_id):
+    return for_return(politicianModel.getDetail({"id": p_id}))
 
 
-def area():
-    return ret(politicianModel.getArea())
+def area(request):
+    return JsonResponse(for_return(politicianModel.getArea()))
 
 
-def name():
-    return ret(politicianModel.getName())
+def name(request):
+    return JsonResponse(for_return(politicianModel.getName()))
 
 
-def term():
-    return ret(politicianModel.getTerm())
+def term(request):
+    return JsonResponse(for_return(politicianModel.getTerm()))
 
 
-def cond():
-    return ret(politicianModel.getCond())
+def cond(request):
+    return JsonResponse(for_return(politicianModel.getCond()))
 
 
 
-def getScore():
-    return ret(politicianModel.schedule())
+def getScore(request):
+    return JsonResponse(for_return(politicianModel.schedule()))
 
 
-def score():
-    content = request.json
+def score(request):
+    content = get_POST_data(request)
     cond = ["user_id", "policy_id", "ps_id", "remark"]
     result = checkParm(cond, content)
     if(isinstance(result,dict)):

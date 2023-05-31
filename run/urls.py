@@ -6,4 +6,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('p/',include("politician.urls")),
     path('u/',include("user.urls")),
+    path('m/',include("manager.urls")),
 ]

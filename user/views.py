@@ -1,8 +1,10 @@
+# coding=utf-8
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse,HttpResponse
 from . import userModel
-from .util import (ret,checkParm)
-from flask import request
+from run.util import (ret,checkParm,get_POST_data,for_return)
+import json
+from run.coder import MyEncoder
 
 # ret = util.ret
 # checkParm = util.checkParm
@@ -49,33 +51,36 @@ def sign(request):
 
 
 def getUser(request,u_id):
-    return JsonResponse(userModel.hasUser(u_id))
+    print('this is get user')
+    return JsonResponse(userModel.hasUser(u_id),safe=False)
 
 
 def user(request):
-    content = request.POST
-    return JsonResponse(userModel.user(content["user_id"]))
+    
+    content = get_POST_data(request)
+    result=userModel.user(content["user_id"])
+    return JsonResponse(for_return(result))
 
 
 def edit(request):
-    content = request.POST
-    print(content)
+    content = request.body
+    print(json.loads(content))
     cond = ["account", "oldPassword", "password", "passwordConfire"]
     result = {"success": False, "mes": ""}
     t = checkParm(cond, content)
-
+    
     if(isinstance(t, dict)):
         oldPasswordFromDB = userModel.findPasswordByAccount(
-            content["account"], t["oldPassword"])
-        print(oldPasswordFromDB)
+            t["account"], t["oldPassword"])
+        print(f'this is idk{oldPasswordFromDB}')
         if(oldPasswordFromDB["success"]):
             oldPasswordFromDB = oldPasswordFromDB["data"]
             if(len(oldPasswordFromDB) > 0):
-                if(content["password"] != content["passwordConfire"]):
+                if(t["password"] != t["passwordConfire"]):
                     result["mes"] += "密碼和確認密碼不同\n"
                 if(result["mes"] == ""):
                     data = userModel.changePassword(
-                        content["account"], content["password"])
+                        t["account"], t["password"])
                     result["mes"] = "更換密碼成功"
                     result["success"] = True
                     result["data"] = data
@@ -83,6 +88,7 @@ def edit(request):
                 result["mes"] = "輸入舊密碼錯誤"
             else:
                 result["mes"] = "帳號異常"
+    else:print("this is else")
     return JsonResponse((result))
 
 

@@ -1,6 +1,6 @@
-from .db import DB
+from run.db import DB
 import json
-# from model.util import group
+from run.util import (group)
 
 
 def list(data):
@@ -9,7 +9,7 @@ def list(data):
         for i in data.keys():
             strCond += f" {i} =\"{data[i]}\" and"
     result = []
-    sqlstr = 'SELECT p.id,p.term,f.name,a.name as a_n	,p.experience,p.degree,p.tel FROM db.politician as p join electorate as e on p.electorate_id=e.id join figure as f on p.figure_id=f.id join area as a on e.area_id=a.id order by e.area_id'
+    sqlstr = 'SELECT p.id,p.term,f.name,a.name as a_n	,p.experience,p.degree,p.tel FROM politician as p join electorate as e on p.electorate_id=e.id join figure as f on p.figure_id=f.id join area as a on e.area_id=a.id order by e.area_id'
     rows = DB.execution(DB.select, sqlstr)
     # return rows["data"]
     position = rows["data"][0]["postition"]
@@ -32,6 +32,7 @@ def list(data):
 
 
 def getList(data):
+    print("this is getlist")
     strCond = ""
     if (isinstance(data, dict)):
         for i in data.keys():
@@ -41,12 +42,12 @@ def getList(data):
             strCond += f" { c[0:len(c)-1]} )"
     sqlstr = "".join([
         " SELECT p.id,p.term,f.name,p.photo,a.name as a_n,p.experience,p.degree,p.tel ,cs.score ",
-        " FROM db.politician as p join electorate as e on p.electorate_id=e.id join figure as f on p.figure_id=f.id join area as a on e.area_id=a.id ",
+        " FROM politician as p join electorate as e on p.electorate_id=e.id join figure as f on p.figure_id=f.id join area as a on e.area_id=a.id ",
         " join count_score as cs on p.id=cs.id "
         f"  {' where '+strCond if len(strCond) > 0 else ''} ",
         " order by e.area_id,p.term,f.name"
     ])
-
+    print("after gruop ")
     rows = DB.execution(DB.select, sqlstr)
 
     return rows
@@ -63,7 +64,7 @@ def getDetail(data):
             "sql":
 
             "SELECT p.id,p.term,f.name,p.photo,a.name as a_n,p.experience,p.degree,p.tel,pa.name as p_name,e.name as e_n,e.remark"
-            + " FROM db.politician as p join electorate as e on p.electorate_id=e.id join figure as f on p.figure_id=f.id join area as a on e.area_id=a.id join party as pa on p.party_id=pa.id"
+            + " FROM politician as p join electorate as e on p.electorate_id=e.id join figure as f on p.figure_id=f.id join area as a on e.area_id=a.id join party as pa on p.party_id=pa.id"
             + f" where p.id=\" {data['id']} \" order by e.area_id,p.term,f.name",              "name": "detail"
         },
         {
@@ -82,10 +83,10 @@ def getDetail(data):
             "sql": "".join(["select * from proposer as er join proposal as p on er.proposal_id=p.id where er.politician_id=\"", data["id"], "\""]), "name":"proposal"
         },
         {
-            "sql": f"SELECT session,attend FROM db.attendance  where politician_id={data['id']} group by `session` ;", "name": "attend"
+            "sql": f"SELECT session,attend FROM attendance  where politician_id={data['id']} group by `session` ;", "name": "attend"
         },
         {
-            "sql": f"SELECT session,sum(attend)/count(*) as avg FROM db.attendance group by `session` ;",            "name": "trend_attend_group"
+            "sql": f"SELECT session,sum(attend)/count(*) as avg FROM attendance group by `session` ;",            "name": "trend_attend_group"
         },
         {
             "sql": f"select s.status,ifnull(d.c,0) as c  from status as s left join (select status_id,count(*) as c from proposer as er  left join proposal as po on er.proposal_id=po.id where er.politician_id={data['id']} group by status_id ) d on d.status_id=s.id ",
@@ -119,7 +120,9 @@ def getDetail(data):
     ]
 
     rows = DB.execution(DB.select, sqlstr)
-    rows["data"]["policy"] = group(rows["data"]["policy"], ["name"], "id")
+    # rows["data"]["policy"] = group(rows["data"]["policy"], ["name"], "id")
+   
+    # print(rows)
     return rows
 
 
@@ -135,32 +138,32 @@ def changePolitician(data, id):
 
 
 def getArea():
-    sqlstr = "SELECT id as value ,name as text FROM db.area order by id;"
+    sqlstr = "SELECT id as value ,name as text FROM area order by id;"
     strCond = ""
     return DB.execution(DB.select, sqlstr)
 
 
 def getName():
-    sqlstr = "SELECT name FROM db.figure group by name;"
+    sqlstr = "SELECT name FROM figure group by name;"
     strCond = ""
     return DB.execution(DB.select, sqlstr)
 
 
 def getTerm():
-    sqlstr = "SELECT term FROM db.politician group by term;"
+    sqlstr = "SELECT term FROM politician group by term;"
     strCond = ""
     return DB.execution(DB.select, sqlstr)
 
 
 def getCond():
-    sqlstr = [{"sql": "SELECT name FROM db.area order by id;", "name": "地區"},
-              {"sql": "SELECT name FROM db.figure group by name;", "name": "姓名"},
-              {"sql": "SELECT term as name FROM db.politician group by term;", "name": "屆別"}]
+    sqlstr = [{"sql": "SELECT name FROM area order by id;", "name": "地區"},
+              {"sql": "SELECT name FROM figure group by name;", "name": "姓名"},
+              {"sql": "SELECT term as name FROM politician group by term;", "name": "屆別"}]
     return DB.execution(DB.select, sqlstr)
 
 
 def schedule():
-    sqlstr = "select * from db.schedule"
+    sqlstr = "select * from schedule"
     return DB.execution(DB.select, sqlstr)
 
 

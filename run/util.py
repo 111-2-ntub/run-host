@@ -4,10 +4,11 @@ from .coder import MyEncoder
 
 
 def checkParm(cond, content, option=None):
+    content=json.loads(content)
     res = ""
     result = {}
     for i in cond:
-        if(i not in content.keys()):
+        if(i not in content):
             res += "缺少必要參數 %s\n" % i
             break
         else:
@@ -19,7 +20,16 @@ def ret(result):
     # print(result)
     mes= " " if "mes"  not in result.keys() else result["mes"]
     resultData = result["data"] if "data" in result else {}
-    return make_response(json.dumps({"D": resultData, "message": mes, "success": result["success"], }, cls=MyEncoder))
+    return json.dumps({"D": resultData, "message": mes, "success": result["success"], }, cls=MyEncoder)
+
+def get_POST_data(requset):
+    content = requset.body
+    return json.loads(content)
+
+def for_return(result):
+    return json.loads(json.dumps(result,cls=MyEncoder))
+
+
 
 # 好像不能用
 
