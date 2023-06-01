@@ -4,12 +4,24 @@ from django.http import JsonResponse,HttpResponse
 from . import userModel
 from run.util import (ret,checkParm,get_POST_data,for_return)
 import json
-from run.coder import MyEncoder
+from django.contrib import auth
 
 # ret = util.ret
 # checkParm = util.checkParm
 
 def login(request):
+    # if request.user.is_authenticated:
+    #         pass
+    #         # return HttpResponseRedirect('/index/')
+    # username = request.POST.get('username', '')
+    # password = request.POST.get('password', '')
+    # user = auth.authenticate(username=username, password=password)
+    # if user is not None and user.is_active:
+    #     auth.login(request, user)
+    #     pass
+    #     # return HttpResponseRedirect('/index/')
+    # else:
+    #     return render(request, 'login.html', locals())
     return JsonResponse("good")
     content = request.POST
     account = content['account']

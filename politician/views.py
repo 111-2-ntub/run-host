@@ -14,7 +14,7 @@ def list(request):
 
 
 def detail(request,p_id):
-    return for_return(politicianModel.getDetail({"id": p_id}))
+    return JsonResponse(for_return(politicianModel.getDetail({"id": p_id})))
 
 
 def area(request):

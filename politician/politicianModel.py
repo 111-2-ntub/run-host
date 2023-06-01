@@ -122,7 +122,7 @@ def getDetail(data):
     rows = DB.execution(DB.select, sqlstr)
     # rows["data"]["policy"] = group(rows["data"]["policy"], ["name"], "id")
    
-    # print(rows)
+    print(rows)
     return rows
 
 
