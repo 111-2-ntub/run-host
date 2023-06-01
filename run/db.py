@@ -23,10 +23,10 @@ class DB():
     def store_p(self):
         return 5
 
-    __host = '127.0.0.1'
-    __user = 'root'
-    __dbname = 'run'
-    __password = 'root'
+    __host = '85.10.205.173'
+    __user = 'politics_run'
+    __dbname = 'politics_run'
+    __password = 'Qinhev-qarvar-cawsu3'
     __conn = None
 
     @staticmethod
