@@ -36,14 +36,16 @@ def identityUser(request):
 
 # 檢舉審核
 def report(request):
-    content = request.body  
-    print(json.loads(content))
-    cond = [ "check","report_id","manager_id","time"]
-    t = checkParm(cond, content)
-    print(t)
-    if(isinstance(t, dict)):
-        data = managerModel.reportCheck(
-        check=t["check"], report_id=t["report_id"], manager_id=t["manager_id"],time=t["time"])
-        return JsonResponse(for_return(data))
+    if request.method =="GET":
+        return JsonResponse(for_return(managerModel.report()))
     else:
-        return JsonResponse({"success": False, "message": t})
+        content = request.body  
+        cond = [ "check","report_id","manager_id","time"]
+        t = checkParm(cond, content)
+        print(t)
+        if(isinstance(t, dict)):
+            data = managerModel.reportCheck(
+            check=t["check"], report_id=t["report_id"], manager_id=t["manager_id"],time=t["time"])
+            return JsonResponse(for_return(data))
+        else:
+            return JsonResponse({"success": False, "message": t})

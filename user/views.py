@@ -31,7 +31,7 @@ def login(request):
     password = content['password']
     user = authenticate(username=username, password=password)
     if user is not None and user.is_active:        
-        return JsonResponse({"message":"login successfully","success":True})
+        return JsonResponse(for_return({"message":"login successfully","success":True,"data":{"identity":user.identity}}))
     else:
         return JsonResponse({"message":"login fail","success":False})
     # return JsonResponse("good")

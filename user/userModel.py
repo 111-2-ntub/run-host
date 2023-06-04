@@ -9,13 +9,14 @@ from django.db import models
 class MyUser(AbstractBaseUser):
     id=models.CharField(max_length=40,primary_key=True)
     name = models.CharField(max_length=40, unique=True)
+    identity=models.IntegerField()
     class Meta:
         db_table="user"
     USERNAME_FIELD = 'name'
 
-def login(account, password):
-    sqlstr = f"select * from user where id=\"{account}\" and password = md5(\"{password}\")"
-    return (DB.execution(DB.select, sqlstr))
+# def login(account, password):
+#     sqlstr = f"select * from user where id=\"{account}\" and password = md5(\"{password}\")"
+#     return (DB.execution(DB.select, sqlstr))
 
 
 def findPasswordByAccount(account, psw):
