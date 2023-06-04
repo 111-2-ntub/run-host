@@ -30,16 +30,18 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    "corsheaders",
+    "user.apps.UserConfig",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    "corsheaders"
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -47,15 +49,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware'
 ]
 
 ROOT_URLCONF = 'run.urls'
-CORS_ALLOW_HEADERS = "*"
 CORS_ORIGIN_ALLOW_ALL=True
-CORS_ALLOW_CREDENTIALS=True
-CORS_ALLOW_ALL_ORIGINS=True
+
 CORS_ALLOW_METHODS = [
     'DELETE',
     'GET',
@@ -65,23 +64,23 @@ CORS_ALLOW_METHODS = [
     'PUT',
     'VIEW',
 ]
-# CORS_ALLOW_HEADERS = [
-#  "accept",
-#  "accept-encoding",
-#  "authorization",
-#  "content-type",
-#  "dnt",
-#  "origin",
-#  "user-agent",
-#  "x-csrftoken",
-#  "x-requested-with",
-# ]
-
+DATABASES = {
+    'default': {
+       'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'politics_run',
+        'USER': 'politics_run',
+        'PASSWORD': 'Qinhev-qarvar-cawsu3',
+        'HOST':'85.10.205.173',
+        'PORT':'3306',
+    }
+}
 
 CORS_ALLOWED_ORIGINS = [
+    
     "http://127.0.0.1:3000",
     'http://localhost:3000'
 ]
+APPEND_SLASH=False
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -104,12 +103,12 @@ WSGI_APPLICATION = 'run.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
 
 
 # Password validation
@@ -152,3 +151,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_HEADERS = ('*')

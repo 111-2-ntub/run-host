@@ -9,20 +9,32 @@ from django.contrib import auth
 # ret = util.ret
 # checkParm = util.checkParm
 
+from django.contrib.auth.hashers import check_password
+
+
+
+def authenticate(username=None, password=None):
+    try:
+        user = userModel.MyUser.objects.get(id=username)
+        
+        if password==user.password:
+            return user
+        return None
+    except userModel.MyUser.DoesNotExist:
+        # No user was found.
+        return None
+
 def login(request):
-    # if request.user.is_authenticated:
-    #         pass
-    #         # return HttpResponseRedirect('/index/')
-    # username = request.POST.get('username', '')
-    # password = request.POST.get('password', '')
-    # user = auth.authenticate(username=username, password=password)
-    # if user is not None and user.is_active:
-    #     auth.login(request, user)
-    #     pass
-    #     # return HttpResponseRedirect('/index/')
-    # else:
-    #     return render(request, 'login.html', locals())
-    return JsonResponse("good")
+    print("enter login ")
+    content=get_POST_data(request)
+    username = content['username']
+    password = content['password']
+    user = authenticate(username=username, password=password)
+    if user is not None and user.is_active:        
+        return JsonResponse({"message":"login successfully","success":True})
+    else:
+        return JsonResponse({"message":"login fail","success":False})
+    # return JsonResponse("good")
     content = request.POST
     account = content['account']
     password = content["password"]

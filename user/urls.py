@@ -3,7 +3,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('login/',views.login),  #
+    path('login',views.login),  #
     path('sign/',views.sign),
     path("u/<str:u_id>/",views.getUser), # No error
     path('',views.user), # No error

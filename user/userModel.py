@@ -3,6 +3,16 @@ from run.db import DB
 import json
 from run.util import (group)
 
+from django.contrib.auth.models import AbstractBaseUser
+from django.db import models
+
+class MyUser(AbstractBaseUser):
+    id=models.CharField()
+    name = models.CharField(max_length=40, unique=True)
+    class Meta:
+        db_table="user"
+    USERNAME_FIELD = 'name'
+
 def login(account, password):
     sqlstr = f"select * from user where id=\"{account}\" and password = md5(\"{password}\")"
     return (DB.execution(DB.select, sqlstr))
