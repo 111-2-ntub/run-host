@@ -5,27 +5,31 @@ from . import proposalModel
 from run.util import (ret,checkParm,get_POST_data,for_return,normalize_query)
 import json
 from django.contrib import auth
+from proposal.filter import (DFAFilter)
+from run.coder import MyEncoder 
 
 
 def find(request):
     cond = ["id", "term",  "status_id", "title"]
-    content = request.args
-    after = normalize_query(content)
+    content = request.GET
+    # print(content)
+    # after = normalize_query(content)
+    t = checkParm(cond, content)
     condData = {}
-    for i in after.keys():
+    for i in t.keys():
         if i in cond:
-            condData[i] = after[i]
+            condData[i] = t[i]
     data = {}
     data["cond"] = condData
-    data["page"] = after["page"] if "page" in after.keys() else 0
+    data["page"] = t["page"] if "page" in t.keys() else 0
     # for i in cond:
 
-    return ret(proposalModel.pList(data))
+    return JsonResponse(for_return(proposalModel.pList(data)))
 
 
 def msg(request):
     print("here")
-    content = request.json
+    content = get_POST_data(request)
     cond = ["user_id", "content", "article_id", "parent_id"]
     t = checkParm(cond, content)
     if(isinstance(t, dict)):
@@ -40,16 +44,17 @@ def msg(request):
             data = {"success": False, "mes": "請確認是否有不雅字詞出現"}
     else:
         data = {"success": False, "mes": t}
-    return ret(data)
+    return JsonResponse(json.dumps(data),cls=MyEncoder)
 
 
-def search(p_id,request):
-    user_id = request.args.get("user_id")
-    return ret(proposalModel.msgList(p_id, user_id))
+def search(request,p_id):
+    # user_id = request.args.get("user_id")
+    print(json.loads(request.body))
+    return JsonResponse(for_return(proposalModel.msgList(p_id, user_id)))
 
 
 def vote(request):
-    content = request.json
+    content = get_POST_data(request)
     cond = ["user_id", "sp_id", "proposal_id"]
     t = checkParm(cond, content)
     if(isinstance(t, str)):
@@ -57,26 +62,27 @@ def vote(request):
     else:
         data = proposalModel.vote(
             userid=content[cond[0]], sp_id=content[cond[1]], proposal_id=content[cond[2]])
-    return ret(data)
+    return JsonResponse(for_return(data))
 
 
 def save(request):
     if request.method =="GET":
-        content = request.json
+        content = request.body
+        print(json.loads(content))
         cond = ["user_id", "proposal_id"]
         result = checkParm(cond, content)
         if(isinstance(result, dict)):
-            return ret(proposalModel.save(content["user_id"], content["proposal_id"]))
+            return JsonResponse(for_return(proposalModel.save(content["user_id"], content["proposal_id"])))
         else:
-            return ret({"success": False, "message": result})
+            return JsonResponse(for_return({"success": False, "message": result}))
     else:
         content = request.args.get("user_id")
         cond = ["user_id"]
         # result = checkParm(cond, content)
         if(content == ""):
-            return ret({"success": False, "message": "請登入"})
+            return JsonResponse(for_return({"success": False, "message": "請登入"}))
         else:
-            return ret(proposalModel.getSave(content))
+            return JsonResponse(for_return(proposalModel.getSave(content)))
 
 
 
@@ -85,17 +91,17 @@ def report(request):
     cond = ["user_id", "message_id", "remark", "rule"]
     t = checkParm(cond, content)
     if(isinstance(t, dict)):
-        return ret(proposalModel.report(content["user_id"], content["message_id"], content["remark"], content["rule"]))
+        return JsonResponse(for_return(proposalModel.report(content["user_id"], content["message_id"], content["remark"], content["rule"])))
     else:
-        return ret({"success": False, "message": t})
+        return JsonResponse(for_return({"success": False, "message": t}))
 
 
 def rule():
-    return ret(proposalModel.rule())
+    return JsonResponse(for_return(proposalModel.rule()))
 
 
 def cond():
-    return ret(proposalModel.getCond())
+    return JsonResponse(for_return(proposalModel.getCond()))
 
 
 def great(request,m_id):
@@ -115,6 +121,6 @@ def removeSave(request):
     cond = ["user_id", "proposal_id"]
     t = checkParm(cond, content)
     if(isinstance(t, dict)):
-        return ret(proposalModel.removeSave(t["user_id"], t["proposal_id"]))
+        return JsonResponse(for_return(proposalModel.removeSave(t["user_id"], t["proposal_id"])))
     else:
-        return ret({"success": False, "message": t})
+        return JsonResponse(for_return({"success": False, "message": t}))

@@ -2,6 +2,8 @@ from run.db import DB
 from run.util import (group)
 import json
 import math
+from snownlp import SnowNLP
+from snownlp import sentiment
 
 
 def pList(data):
@@ -32,7 +34,7 @@ def pList(data):
         " left join category as c on pc.category_id=c.id ",
 
         " left join proposer as er on p.id=er.proposal_id ",
-        " left join politician as po on po.id=er.politician_id ",
+        " left join proposer as er on p.id=er.proposal_id ",
         " left join figure as f on po.figure_id=f.id "
         " left join proposal_vote as pv on p.id=pv.id"
     ]), "name":"list"},

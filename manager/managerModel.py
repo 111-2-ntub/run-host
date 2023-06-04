@@ -1,6 +1,7 @@
 from run.db import DB
 import json
 from run.util import (group)
+from datetime import datetime
 
 def setIdentity(user_id, identity):
     sqlstr = f"update user set identity={identity} where id=\"{user_id}\""
@@ -23,12 +24,16 @@ def getUser():
 
 
 def reportCheck(check, report_id, manager_id, time):
-    sqlstr = "update report set check=%s where id=\"%s\"" % (
-        check, report_id)
-    if(check == 1):
-        sqlstr.append("insert into freezen (manager_id,report_id,time) values(%s,%s,%s)" % (
-            manager_id, report_id, time))
-    return DB.execution(DB.select, sqlstr)
+    sqlstr = "update report set `check`=%s where `id`=%s" % (
+            check, report_id)
+    if(check == 0 ):
+        return DB.execution(DB.update, sqlstr)
+        
+    elif(check == 1):
+        time = datetime.strptime(time, '%Y-%m-%d %H:%M:%S')
+        sqlstr + "insert into freezen (manager_id,report_id,time) values(%s,%s,%s)" % (
+            manager_id, report_id, time)
+        return DB.execution(DB.update, sqlstr)
 
 
 def report():

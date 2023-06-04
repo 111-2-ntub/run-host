@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse,HttpResponse
 from . import managerModel
-from run.util import (ret,checkParm)
+from run.util import (ret,checkParm,for_return)
 from run.coder import MyEncoder 
 import json
 
@@ -11,17 +11,17 @@ def identity(request):
         print("get")
         result=managerModel.identity()
         print(result)
-        return JsonResponse(json.dumps(
-            result,cls=MyEncoder))
+        return JsonResponse(for_return(result))
     else:
         print("post")
-        content = request.json
+        content = request.body
+        print(json.loads(content))
         cond = ["user_id", "identity"]
         t = checkParm(cond,content)
         if(isinstance(t, dict)):
-            return JsonResponse(json.dumps(managerModel.setIdentity(t["user_id"], t["identity"])))
+            return JsonResponse(for_return(managerModel.setIdentity(t["user_id"], t["identity"])))
         else:
-            return JsonResponse(json.dumps({"success": False, "message": t}))
+            return JsonResponse({"success": False, "message": t})
 
 # 未完成
 # 轉身分
@@ -29,22 +29,21 @@ def identity(request):
 
 def identityUser(request):
     if request.method=="GET":
-        result=ret(managerModel.getUser())
-        print("result")
-        print(type(result))
-        return JsonResponse(data= result)
+        return JsonResponse(for_return(managerModel.getUser()))
     else:
-        return JsonResponse(managerModel.report())
+        return JsonResponse(for_return(managerModel.report()))
 
 
 # 檢舉審核
 def report(request):
     content = request.body  
+    print(json.loads(content))
     cond = [ "check","report_id","manager_id","time"]
     t = checkParm(cond, content)
+    print(t)
     if(isinstance(t, dict)):
         data = managerModel.reportCheck(
-            check=content[cond[0]], report_id=content[cond[1]], manager_id=content[cond[2]],time=content[cond[3]])
-        return JsonResponse(data)
+        check=t["check"], report_id=t["report_id"], manager_id=t["manager_id"],time=t["time"])
+        return JsonResponse(for_return(data))
     else:
         return JsonResponse({"success": False, "message": t})
