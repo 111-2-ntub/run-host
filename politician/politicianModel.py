@@ -159,8 +159,8 @@ def getTerm():
 
 def getCond():
     sqlstr = [{"sql": "SELECT name FROM area order by id;", "name": "地區"},
-              {"sql": "SELECT name FROM figure group by name;", "name": "姓名"},
-              {"sql": "SELECT term as name FROM politician group by term;", "name": "屆別"}]
+                {"sql": "SELECT name FROM figure group by name;", "name": "姓名"},
+                {"sql": "SELECT term as name FROM politician group by term;", "name": "屆別"}]
     return DB.execution(DB.select, sqlstr)
 
 
@@ -169,7 +169,7 @@ def schedule():
     return DB.execution(DB.select, sqlstr)
 
 
-def score(user_id, policy_id, ps_id, remark):   
-    sqlstr = {"name": "policy_vote", "arg": [
-        f"{user_id}", f"{policy_id}", f"{ps_id}",f"{remark}"]}
-    return DB.execution(DB.store_p, sqlstr)
+def score(user_id, policy_id, ps_id, remark):  
+    sqlstr = "insert into user_policy (user_id, policy_id, ps_id, remark) values(\"%s\",%s,%s,\"%s\")" % (
+            user_id, policy_id, ps_id, remark)
+    return DB.execution(DB.create, sqlstr)

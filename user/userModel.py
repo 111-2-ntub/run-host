@@ -7,7 +7,7 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.db import models
 
 class MyUser(AbstractBaseUser):
-    id=models.CharField()
+    id=models.CharField(max_length=40,primary_key=True)
     name = models.CharField(max_length=40, unique=True)
     class Meta:
         db_table="user"
