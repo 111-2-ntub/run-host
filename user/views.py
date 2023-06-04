@@ -80,10 +80,13 @@ def getUser(request,u_id):
 
 
 def user(request,u_id):
-    
-    # content = get_POST_data(request)
-    result=userModel.user(u_id)
-    return JsonResponse(for_return(result))
+    if request.method=="DELETE":
+        print("delete user")
+        return JsonResponse(userModel.del_user(u_id))
+    else:
+        # content = get_POST_data(request)
+        result=userModel.user(u_id)
+        return JsonResponse(for_return(result))
 
 
 def edit(request):
@@ -145,4 +148,6 @@ def c(request):
 
 def p_user(request,p_id):
     return JsonResponse((userModel.politician_user(p_id)))
+
+
     

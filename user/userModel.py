@@ -18,6 +18,17 @@ class MyUser(AbstractBaseUser):
 #     sqlstr = f"select * from user where id=\"{account}\" and password = md5(\"{password}\")"
 #     return (DB.execution(DB.select, sqlstr))
 
+def del_user(account):
+    try:
+        record = MyUser.objects.get(id = account)
+        result=record.delete()
+        return {"message":"刪除成功","data":result}
+    except:
+        return {"message":"帳號不存在"}
+        
+    
+        
+    
 
 def findPasswordByAccount(account, psw):
     sqlstr = f"select * from user where id=\"{account}\" and password=md5(\"{psw}\")"

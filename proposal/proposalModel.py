@@ -28,7 +28,7 @@ def pList(data):
     sqlstr = [{"sql": "".join([
         "select p.*,s.status ,pc.category_id,f.name,IFNULL(goodc,0) as good ,ifnull(medc,0) as med ,ifnull(badc,0) as bad ,c.name as c_name ",
         "from proposal as p join `status`  as s on p.status_id=s.id ",
-        f" join (select * from proposal group by id having term =10  { ' and ' + strCond[0:len(strCond)-3] if len(strCond) > 0 else ''} limit {page*20},20) as t  on p.id=t.id ",
+        f" join (select distinct id as proposal_id,p.* from proposal as p group by id having term =10  { ' and ' + strCond[0:len(strCond)-3] if len(strCond) > 0 else ''} limit {page*20},20) as t  on p.id=t.id ",
         " left join proposal_category as pc on p.id=pc.propsoal_id ",
 
         " left join category as c on pc.category_id=c.id ",

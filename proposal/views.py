@@ -12,16 +12,19 @@ from run.coder import MyEncoder
 def find(request):
     cond = ["id", "term",  "status_id", "title"]
     content = request.GET
-    # print(content)
+    print("find ")
+    print(content)
+    print("end content")
     # after = normalize_query(content)
-    t = checkParm(cond, content)
+    # t = checkParm(cond, content)
     condData = {}
-    for i in t.keys():
-        if i in cond:
-            condData[i] = t[i]
+    # for i in t.keys():
+    #     if i in cond:
+    #         condData[i] = t[i]
     data = {}
     data["cond"] = condData
-    data["page"] = t["page"] if "page" in t.keys() else 0
+    # data["page"] = t["page"] if "page" in t.keys() else 0
+    data['page']=0
     # for i in cond:
 
     return JsonResponse(for_return(proposalModel.pList(data)))

@@ -7,5 +7,6 @@ urlpatterns = [
     path('politician/',include("politician.urls")),
     path('user/',include("user.urls")),
     path('manage/',include("manager.urls")),
-    path("home",views.home)
+    path("home",views.home),
+    path('proposal/',include('proposal.urls'))
 ]
