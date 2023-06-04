@@ -39,12 +39,14 @@ def getScore(request):
 
 
 def score(request):
-    content = get_POST_data(request)
-    cond = ["user_id", "policy_id", "ps_id", "remark"]
-    result = checkParm(cond, content)
-    if(isinstance(result,dict)):
-        politicianModel.score(
-            content["user_id"], content["policy_id"], content["ps_id"], content["remark"])
-        return ret({"success": True, "message": "評分成功"})
+    if request.method =="GET":
+        return JsonResponse(for_return(politicianModel.schedule()))
     else:
-        return ret({"success": False, "message": result})
+        cond = ["user_id", "policy_id", "ps_id", "remark"]
+        result = checkParm(cond, request.body)
+        if(isinstance(result,dict)):
+            politicianModel.score(
+                result["user_id"], result["policy_id"], result["ps_id"], result["remark"])
+            return JsonResponse({"success": True, "message": "評分成功"})
+        else:
+            return JsonResponse({"success": False, "message": result})

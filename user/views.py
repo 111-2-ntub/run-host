@@ -79,10 +79,10 @@ def getUser(request,u_id):
     return JsonResponse(userModel.hasUser(u_id),safe=False)
 
 
-def user(request):
+def user(request,u_id):
     
-    content = get_POST_data(request)
-    result=userModel.user(content["user_id"])
+    # content = get_POST_data(request)
+    result=userModel.user(u_id)
     return JsonResponse(for_return(result))
 
 

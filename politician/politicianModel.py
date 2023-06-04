@@ -73,12 +73,14 @@ def getDetail(data):
         },  {
             "sql": "".join(["SELECT * FROM table_policy where  p_id =\"", data["id"], "\"", " order by quota desc ,total desc"]), "name":"table_policy"
         },
-        {
-            "sql": "".join(["SELECT * FROM table_policyDetail where  id =\"", data["id"], "\""]), "name":"table_policyDetail"
-        },  {
+        # {
+        #     "sql": "".join(["SELECT * FROM table_policyDetail where  id =\"", data["id"], "\""]), "name":"table_policyDetail"
+        # }, 
+         
+          {
             "sql": "".join(["SELECT * FROM count_score where  id =\"", data["id"], "\""]), "name":"count_score"
         }, {
-            "sql": "".join(["select *,count(*) as quota from proposer where politician_id=", data["id"], " group by politician_id "]), "name":"proposal_quota"
+            "sql": "".join(["select count(*) as quota from proposer where politician_id=", data["id"], " group by politician_id "]), "name":"proposal_quota"
         }, {
             "sql": "".join(["select * from proposer as er join proposal as p on er.proposal_id=p.id where er.politician_id=\"", data["id"], "\""]), "name":"proposal"
         },
@@ -96,31 +98,31 @@ def getDetail(data):
             "sql": f"select s.status,ifnull(d.c,0)/113 as c from status as s left join (select status_id,count(*) as c from proposer as er  left join proposal as po on er.proposal_id=po.id  group by status_id ) d on d.status_id=s.id ",
             "name": "trend_pro"
         },
-        {
-            "sql": "".join([
-                "SELECT   fakeD.t ,ifnull(realD.score,0) as score from  ",
-                " (select concat(year(up.time),'-',month(up.time)) as t from user_policy as up group by month(up.time)) fakeD "
-                "left join (SELECT   (SUM(`s`.`value`) / COUNT(`s`.`name`)) AS `score`,   `po`.`politician_id` AS `politician_id`,  concat(year(up.time),'-',month(up.time)) as t  "
-                "FROM  ((`policy` `po`  JOIN `user_policy` `up` ON ((`up`.`policy_id` = `po`.`id`))) ",
-                f"JOIN `schedule` `s` ON ((`up`.`ps_id` = `s`.`id`)))  where politician_id={data['id']} GROUP BY month(up.time) ) realD on fakeD.t=realD.t "
+        # {
+        #     "sql": "".join([
+        #         "SELECT   fakeD.t ,ifnull(realD.score,0) as score from  ",
+        #         " (select concat(year(up.time),'-',month(up.time)) as t from user_policy as up group by month(up.time)) fakeD "
+        #         "left join (SELECT   (SUM(`s`.`value`) / COUNT(`s`.`name`)) AS `score`,   `po`.`politician_id` AS `politician_id`,  concat(year(up.time),'-',month(up.time)) as t  "
+        #         "FROM  ((`policy` `po`  JOIN `user_policy` `up` ON ((`up`.`policy_id` = `po`.`id`))) ",
+        #         f"JOIN `schedule` `s` ON ((`up`.`ps_id` = `s`.`id`)))  where politician_id={data['id']} GROUP BY month(up.time) ) realD on fakeD.t=realD.t "
 
-            ]),
-            "name": "trend_policy"
-        }, {
-            "name": "trend_policy_group",
-            "sql": "".join([
-                "SELECT   fakeD.t ,ifnull(realD.score,0) as score from  ",
-                " (select concat(year(up.time),'-',month(up.time)) as t from user_policy as up group by month(up.time)) fakeD "
-                "left join (SELECT   (SUM(`s`.`value`) / COUNT(`s`.`name`)) AS `score`,   `po`.`politician_id` AS `politician_id`,  concat(year(up.time),'-',month(up.time)) as t  "
-                "FROM  ((`policy` `po`  JOIN `user_policy` `up` ON ((`up`.`policy_id` = `po`.`id`))) ",
-                f"JOIN `schedule` `s` ON ((`up`.`ps_id` = `s`.`id`)))    GROUP BY month(up.time) ) realD on fakeD.t=realD.t "
+        #     ]),
+        #     "name": "trend_policy"
+        # }, {
+        #     "name": "trend_policy_group",
+        #     "sql": "".join([
+        #         "SELECT   fakeD.t ,ifnull(realD.score,0) as score from  ",
+        #         " (select concat(year(up.time),'-',month(up.time)) as t from user_policy as up group by month(up.time)) fakeD "
+        #         "left join (SELECT   (SUM(`s`.`value`) / COUNT(`s`.`name`)) AS `score`,   `po`.`politician_id` AS `politician_id`,  concat(year(up.time),'-',month(up.time)) as t  "
+        #         "FROM  ((`policy` `po`  JOIN `user_policy` `up` ON ((`up`.`policy_id` = `po`.`id`))) ",
+        #         f"JOIN `schedule` `s` ON ((`up`.`ps_id` = `s`.`id`)))    GROUP BY month(up.time) ) realD on fakeD.t=realD.t "
 
-            ]),
-        }
+        #     ]),
+        # }
     ]
 
     rows = DB.execution(DB.select, sqlstr)
-    # rows["data"]["policy"] = group(rows["data"]["policy"], ["name"], "id")
+    rows["data"]["policy"] = group(rows["data"]["policy"], ["name"], "id")
    
     print(rows)
     return rows
